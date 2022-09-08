@@ -16,34 +16,54 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         
     }
 
-    //방생성
+    //방 생성
     public void CreateRoom()
     {
-        //방옵션 셋팅
+        // 방 옵션을 설정
         RoomOptions roomOptions = new RoomOptions();
-               
-        //최대인원 (0명이면 최대인원)
+        // 최대 인원 (0이면 최대인원)
         roomOptions.MaxPlayers = 10;
-        //룸 목록에 보이냐? 보이지 않느냐?
+        // 룸 리스트에 보이지 않게? 보이게?
         roomOptions.IsVisible = true;
 
-        //방을 만든다.
-        PhotonNetwork.CreateRoom("XR_A", roomOptions, TypedLobby.Default);
+        // 방 생성 요청 (해당 옵션을 이용해서)
+        PhotonNetwork.CreateRoom("XR_B반", roomOptions);
     }
 
-    //방 생성 완료
+    //방이 생성되면 호출 되는 함수
     public override void OnCreatedRoom()
     {
         base.OnCreatedRoom();
         print("OnCreatedRoom");
     }
 
-    //방 생성 실패
+    //방 생성이 실패 될때 호출 되는 함수
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         base.OnCreateRoomFailed(returnCode, message);
-        print("OnCreateRoomFailed, " + returnCode + ", " + message);
+        print("OnCreateRoomFailed , " + returnCode + ", " + message);
+        JoinRoom();
     }
 
-    //방입장
+    //방 참가 요청
+    public void JoinRoom()
+    {
+        PhotonNetwork.JoinRoom("XR_B반");
+    }
+
+    //방 참가가 완료 되었을 때 호출 되는 함수
+    public override void OnJoinedRoom()
+    {
+        base.OnJoinedRoom();
+        print("OnJoinedRoom");
+        PhotonNetwork.LoadLevel("GameScene");
+    }
+
+    //방 참가가 실패 되었을 때 호출 되는 함수
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        base.OnJoinRoomFailed(returnCode, message);
+        print("OnJoinRoomFailed, " + returnCode + ", " + message);
+    }
+
 }
