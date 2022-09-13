@@ -30,7 +30,9 @@ public class PlayerMove : MonoBehaviourPun, IPunObservable
     Quaternion receiveRot;
     //보간 속력
     public float lerpSpeed = 100;
- 
+
+    //PlayerState 컴포넌트
+    PlayerState playerState;
 
     void Start()
     {        
@@ -40,6 +42,8 @@ public class PlayerMove : MonoBehaviourPun, IPunObservable
         currHp = maxHp;
         //닉네임 설정
         nickName.text = photonView.Owner.NickName;
+        //PlayerState 컴포넌트 가져오기
+        playerState = GetComponent<PlayerState>();
     }
 
     void Update()
@@ -79,6 +83,20 @@ public class PlayerMove : MonoBehaviourPun, IPunObservable
             //3. 그 방향으로 움직이자.
             //P = P0 + vt
             cc.Move(dir * moveSpeed * Time.deltaTime);
+
+            //만약에 움직인다면
+            if(h != 0 || v != 0)
+            {
+                //상태를 Move로
+                playerState.ChangeState(PlayerState.State.MOVE);
+            }
+            //그렇지 않다면
+            else
+            {
+                //상태를 Idle로
+                playerState.ChangeState(PlayerState.State.IDLE);
+            }
+
         }
         //내것이 아니라면
         else
@@ -97,16 +115,23 @@ public class PlayerMove : MonoBehaviourPun, IPunObservable
    
     public void OnDamaged()
     {
+        photonView.RPC("RpcOnDamaged", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void RpcOnDamaged()
+    {
         //1. 현재 체력 1 줄여주고
         currHp--;
         print("현재체력 : " + currHp);
         //2. 만약에 현재 체력이 0보다 같거나 작아지면
         if (currHp <= 0)
         {
-            //3. 나를 파괴한다.
-            Destroy(gameObject);
+            //3. 상태를 DIE로 바꾼다.
+            playerState.RpcChangeState(PlayerState.State.DIE);
         }
     }
+
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

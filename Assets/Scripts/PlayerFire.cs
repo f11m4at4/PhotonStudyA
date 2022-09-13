@@ -62,6 +62,9 @@ public class PlayerFire : MonoBehaviourPun
 
             // 서버에 RpcShowBulletImpact 함수 실행 요청
             photonView.RPC("RpcShowBulletImpact", RpcTarget.All, hit.point, hit.normal);
+
+            //공격 애니메이션
+            photonView.RPC("RpcSetTrigger", RpcTarget.All, "Attack");
         }
     }
 

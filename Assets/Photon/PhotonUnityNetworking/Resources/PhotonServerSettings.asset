@@ -40,6 +40,10 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - RpcShowBulletImpact
+  - RpcOnDamaged
+  - RpcChangeState
+  - RpcSetTrigger
+  - RpcSendText
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
