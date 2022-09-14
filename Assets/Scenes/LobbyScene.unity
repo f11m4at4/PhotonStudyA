@@ -713,6 +713,8 @@ MonoBehaviour:
   inputMaxPlayer: {fileID: 110984910}
   btnJoin: {fileID: 1287704642}
   btnCreate: {fileID: 1084989144}
+  trListContent: {fileID: 1623176490}
+  roomItemFactory: {fileID: 356185162197043259, guid: 224626e40f9c95f4ebd69cbc797cc14d, type: 3}
 --- !u!4 &718916271
 Transform:
   m_ObjectHideFlags: 0
@@ -2206,7 +2208,7 @@ MonoBehaviour:
   m_Spacing: 5
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 0
+  m_ChildControlWidth: 1
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
