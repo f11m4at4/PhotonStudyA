@@ -33,7 +33,6 @@ public class PlayerState : MonoBehaviourPun
     [PunRPC]
     public void RpcChangeState(State s)
     {
-        print(s.ToString());
         //현재 상태가 s와 같다면 함수를 나간다.
         if (currState == s) return;
 

@@ -3,18 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
+    //방이름 InputField
+    public InputField inputRoomName;
+    //총인원 InputField
+    public InputField inputMaxPlayer;
+    //방참가 Button
+    public Button btnJoin;
+    //방생성 Button
+    public Button btnCreate;
     void Start()
     {
-        CreateRoom();
+        // 방이름(InputField)이 변경될때 호출되는 함수 등록
+        inputRoomName.onValueChanged.AddListener(OnRoomNameValueChanged);
+        // 총인원(InputField)이 변경될때 호출되는 함수 등록
+        inputMaxPlayer.onValueChanged.AddListener(OnMaxPlayerValueChanged);
     }
 
-    void Update()
+    public void OnRoomNameValueChanged(string s)
     {
-        
+        //참가
+        btnJoin.interactable = s.Length > 0;
+        //생성
+        btnCreate.interactable = s.Length > 0 && inputMaxPlayer.text.Length > 0;
     }
+
+    public void OnMaxPlayerValueChanged(string s)
+    {
+        //생성
+        btnCreate.interactable = s.Length > 0 && inputRoomName.text.Length > 0;
+    }
+   
 
     //방 생성
     public void CreateRoom()
@@ -22,12 +44,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         // 방 옵션을 설정
         RoomOptions roomOptions = new RoomOptions();
         // 최대 인원 (0이면 최대인원)
-        roomOptions.MaxPlayers = 10;
+        roomOptions.MaxPlayers = byte.Parse(inputMaxPlayer.text);
         // 룸 리스트에 보이지 않게? 보이게?
         roomOptions.IsVisible = true;
 
         // 방 생성 요청 (해당 옵션을 이용해서)
-        PhotonNetwork.CreateRoom("XR_B반", roomOptions);
+        PhotonNetwork.CreateRoom(inputRoomName.text, roomOptions);
     }
 
     //방이 생성되면 호출 되는 함수
@@ -42,13 +64,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         base.OnCreateRoomFailed(returnCode, message);
         print("OnCreateRoomFailed , " + returnCode + ", " + message);
-        JoinRoom();
     }
 
     //방 참가 요청
     public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom("XR_B반");
+        PhotonNetwork.JoinRoom(inputRoomName.text);
     }
 
     //방 참가가 완료 되었을 때 호출 되는 함수
