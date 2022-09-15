@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -21,8 +20,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     //룸 리스트 Content
     public Transform trListContent;
 
+    //map Thumbnail
+    public GameObject[] mapThumbs;
+
     void Start()
-    {
+    {        
         // 방이름(InputField)이 변경될때 호출되는 함수 등록
         inputRoomName.onValueChanged.AddListener(OnRoomNameValueChanged);
         // 총인원(InputField)이 변경될때 호출되는 함수 등록
@@ -53,7 +55,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         roomOptions.MaxPlayers = byte.Parse(inputMaxPlayer.text);
         // 룸 리스트에 보이지 않게? 보이게?
         roomOptions.IsVisible = true;
-
+        // custom 정보를 셋팅
+        ExitGames.Client.Photon.Hashtable hash = new ExitGames.Client.Photon.Hashtable();
+        hash["desc"] = "여긴 초보방이다! " + Random.Range(1, 1000);
+        hash["map_id"] = Random.Range(0, mapThumbs.Length);
+        roomOptions.CustomRoomProperties = hash;
+        // custom 정보를 공개하는 설정
+        roomOptions.CustomRoomPropertiesForLobby = new string[] {"desc", "map_id"};
+                
         // 방 생성 요청 (해당 옵션을 이용해서)
         PhotonNetwork.CreateRoom(inputRoomName.text, roomOptions);
     }
@@ -168,8 +177,40 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             GameObject go = Instantiate(roomItemFactory, trListContent);
             //룸아이템 정보를 셋팅(방제목(0/0))
             RoomItem item = go.GetComponent<RoomItem>();
-            item.SetInfo(info.Name, info.PlayerCount, info.MaxPlayers);
+            item.SetInfo(info);
+
+            //roomItem 버튼이 클릭되면 호출되는 함수 등록
+            item.onClickAction = SetRoomName;
+            //람다식
+            //item.onClickAction = (string room) => {
+            //    inputRoomName.text = room;
+            //};
+
+            string desc = (string)info.CustomProperties["desc"];
+            int map_id = (int)info.CustomProperties["map_id"];
+            print(desc + ", " + map_id);
         }
     }
 
+
+    //이전 Thumbnail id
+    int prevMapId = -1;
+    void SetRoomName(string room, int map_id)
+    {
+        //룸이름 설정
+        inputRoomName.text = room;
+
+        //만약에 이전 맵 Thumbnail이 활성화가 되어있다면
+        if(prevMapId > -1)
+        {
+            //이전 맵 Thumbnail을 비활성화
+            mapThumbs[prevMapId].SetActive(false);
+        }
+
+        //맵 Thumbnail 설정
+        mapThumbs[map_id].SetActive(true);
+
+        //이전 맵 id 저장
+        prevMapId = map_id;
+    }
 }
