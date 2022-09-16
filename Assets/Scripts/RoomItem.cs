@@ -33,7 +33,7 @@ public class RoomItem : MonoBehaviour
 
     public void SetInfo(RoomInfo info)
     {
-        SetInfo(info.Name, info.PlayerCount, info.MaxPlayers);
+        SetInfo((string)info.CustomProperties["room_name"], info.PlayerCount, info.MaxPlayers);
 
         //desc ¼³Á¤
         roomDesc.text = (string)info.CustomProperties["desc"];

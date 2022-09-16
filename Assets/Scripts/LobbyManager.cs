@@ -8,6 +8,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 {
     //방이름 InputField
     public InputField inputRoomName;
+    //비밀번호 InputField
+    public InputField inputPassword;
     //총인원 InputField
     public InputField inputMaxPlayer;
     //방참가 Button
@@ -59,12 +61,16 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         ExitGames.Client.Photon.Hashtable hash = new ExitGames.Client.Photon.Hashtable();
         hash["desc"] = "여긴 초보방이다! " + Random.Range(1, 1000);
         hash["map_id"] = Random.Range(0, mapThumbs.Length);
+        hash["room_name"] = inputRoomName.text;
+        hash["password"] = inputPassword.text;
         roomOptions.CustomRoomProperties = hash;
         // custom 정보를 공개하는 설정
-        roomOptions.CustomRoomPropertiesForLobby = new string[] {"desc", "map_id"};
+        roomOptions.CustomRoomPropertiesForLobby = new string[] {
+            "desc", "map_id", "room_name", "password"
+        };
                 
         // 방 생성 요청 (해당 옵션을 이용해서)
-        PhotonNetwork.CreateRoom(inputRoomName.text, roomOptions);
+        PhotonNetwork.CreateRoom(inputRoomName.text + inputPassword.text, roomOptions);
     }
 
     //방이 생성되면 호출 되는 함수
@@ -84,7 +90,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     //방 참가 요청
     public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom(inputRoomName.text);
+        PhotonNetwork.JoinRoom(inputRoomName.text + inputPassword.text);
     }
 
     //방 참가가 완료 되었을 때 호출 되는 함수
