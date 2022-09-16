@@ -383,6 +383,7 @@ MonoBehaviour:
   bulletImapctFactory: {fileID: 100002, guid: 54dd9cb5740188a488b8baebbf19207c, type: 3}
   bulletFactory: {fileID: 528337331930081015, guid: 1ba3519acf688a54188a12bb58bc46b9, type: 3}
   firePos: {fileID: 8825064593334025127}
+  isMyTurn: 0
 --- !u!114 &-5462202575072732569
 MonoBehaviour:
   m_ObjectHideFlags: 0

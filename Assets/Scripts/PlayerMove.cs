@@ -44,6 +44,8 @@ public class PlayerMove : MonoBehaviourPun, IPunObservable
         nickName.text = photonView.Owner.NickName;
         //PlayerState 컴포넌트 가져오기
         playerState = GetComponent<PlayerState>();
+        //GameManager에게 나의 PhotonView를 주자
+        GameManager.instance.AddPlayer(photonView);
     }
 
     void Update()

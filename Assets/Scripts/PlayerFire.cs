@@ -14,6 +14,8 @@ public class PlayerFire : MonoBehaviourPun
     //총구
     public Transform firePos;
 
+    //내가 총을 쏠수 있니?
+    public bool isMyTurn;
     void Start()
     {
         
@@ -23,11 +25,14 @@ public class PlayerFire : MonoBehaviourPun
     {
         //내것이 아니라면 함수를 끝낸다.
         if (photonView.IsMine == false) return;
+        //내턴이 아니라면 함수를 끝낸다.
+        if (isMyTurn == false) return;
 
         //1. 왼쪽 컨트롤키 누르면 
         if(Input.GetKeyDown(KeyCode.LeftControl))
         {
             FireRay();
+            photonView.RPC("RequestChangeTurn", RpcTarget.MasterClient);
         }
 
         // 1. 왼쪽 알트키를 누르면
@@ -40,6 +45,7 @@ public class PlayerFire : MonoBehaviourPun
             //// 4. 총알의 앞방향을 총구방향으로 한다.
             //bullet.transform.forward = firePos.forward;
             PhotonNetwork.Instantiate("Bullet", firePos.position, firePos.rotation);
+            photonView.RPC("RequestChangeTurn", RpcTarget.MasterClient);
         }
     }
 
@@ -79,5 +85,17 @@ public class PlayerFire : MonoBehaviourPun
         bulletImapct.transform.forward = normal;
         //7. 2초뒤에 파괴한다.
         Destroy(bulletImapct, 2);
+    }
+
+    [PunRPC]
+    void SetMyTurn(bool myTurn)
+    {
+        isMyTurn = myTurn;
+    }
+
+    [PunRPC]
+    void RequestChangeTurn()
+    {
+        GameManager.instance.ChangeTurn();
     }
 }

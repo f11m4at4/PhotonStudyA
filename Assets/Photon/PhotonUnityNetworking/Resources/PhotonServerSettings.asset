@@ -44,6 +44,8 @@ MonoBehaviour:
   - RpcChangeState
   - RpcSetTrigger
   - RpcSendText
+  - SetMyTurn
+  - RequestChangeTurn
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
