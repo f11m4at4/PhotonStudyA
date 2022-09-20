@@ -32,6 +32,7 @@ public class PlayerRot : MonoBehaviourPun
     {
         //만약에 내것이 아니라면 함수를 나간다.
         if (photonView.IsMine == false) return;
+        if (Cursor.visible) return;
 
         //1. 마우스의 움직임을 받는다.
         float mx = Input.GetAxis("Mouse X");
