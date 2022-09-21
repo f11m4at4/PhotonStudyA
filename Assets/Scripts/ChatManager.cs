@@ -12,7 +12,7 @@ public class ChatManager : MonoBehaviourPun
     //ChatItem 공장
     public GameObject chatItemFactory;
     //ScorllView의 Content
-    public Transform trContent;
+    public RectTransform trContent;
 
     //내 아이디 색
     Color idColor;
@@ -67,14 +67,42 @@ public class ChatManager : MonoBehaviourPun
         inputChat.ActivateInputField();
     }
 
+
+    //이전 Content의 H
+    float prevContentH;
+    //ScorllView의 RectTransform
+    public RectTransform trScrollView;
+
     [PunRPC]
     void RpcAddChat(string chatText)
     {
+        //0. 바뀌기 전의 Content H값을 넣자
+        prevContentH = trContent.sizeDelta.y;
+
         //1. ChatItem을 만든다(부모를 Scorllview의 Content)
         GameObject item = Instantiate(chatItemFactory, trContent);
         //2. 만든 ChatItem에서 ChatItem 컴포넌트 가져온다
         ChatItem chat = item.GetComponent<ChatItem>();
         //3. 가져온 컴포넌트에 s를 셋팅
-        chat.SetText(chatText);       
-    }    
+        chat.SetText(chatText);
+
+
+        StartCoroutine(AutoScrollBottom());
+    }
+
+    IEnumerator AutoScrollBottom()
+    {
+        yield return null;
+
+        //trScrollView H 보다 Content H 값이 커지면(스크롤 가능상태)
+        if(trContent.sizeDelta.y > trScrollView.sizeDelta.y)
+        {
+            //4. Content가 바닥에 닿아있었다면
+            if (trContent.anchoredPosition.y >= prevContentH - trScrollView.sizeDelta.y)
+            {
+                //5. Content의 y값을 다시 설정해주자
+                trContent.anchoredPosition = new Vector2(0, trContent.sizeDelta.y - trScrollView.sizeDelta.y);
+            }
+        }        
+    }
 }
